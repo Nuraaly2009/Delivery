@@ -1,0 +1,17 @@
+from fastapi import FastAPI
+import uvicorn
+from mysite.api import user, product, order
+from mysite.database.db import Base, engine
+from mysite.admin.setup import setup_admin
+
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title='Langchain & Delivery')
+
+app.include_router(user.user_router)
+app.include_router(product.product_router)
+app.include_router(order.order_router)
+setup_admin(app)
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='127.0.0.1', port=8000)
