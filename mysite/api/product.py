@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from mysite.database.models import Product
-from mysite.database.schemas import ProductOutSchema, ProductInputSchema
+from mysite.schemas.product_schema import ProductInputSchema, ProductOutputSchema
 from mysite.database.db import SessionLocal
 from sqlalchemy.orm import Session
 from typing import List
@@ -16,7 +16,7 @@ async def get_db():
         db.close()
 
 
-@product_router.post('/', response_model=ProductOutSchema)
+@product_router.post('/', response_model=ProductOutputSchema)
 async def create_product(product: ProductInputSchema, db: Session = Depends(get_db)):
     product_db = Product(**product.dict())
     db.add(product_db)
@@ -25,12 +25,12 @@ async def create_product(product: ProductInputSchema, db: Session = Depends(get_
     return product_db
 
 
-@product_router.get('/', response_model=List[ProductOutSchema])
+@product_router.get('/', response_model=List[ProductOutputSchema])
 async def list_product(db: Session = Depends(get_db)):
     return db.query(Product).all()
 
 
-@product_router.get('/{product_id}/', response_model=ProductOutSchema)
+@product_router.get('/{product_id}/', response_model=ProductOutputSchema)
 async def detail_product(product_id: int, db: Session = Depends(get_db)):
     product_db = db.query(Product).filter(Product.id == product_id).first()
     if not product_db:

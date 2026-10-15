@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import uvicorn
-from mysite.api import user, product, order
+from mysite.api import auth, product, order, ai
 from mysite.database.db import Base, engine
 from mysite.admin.setup import setup_admin
 
@@ -8,9 +8,10 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title='Langchain & Delivery')
 
-app.include_router(user.user_router)
+app.include_router(auth.auth_router)
 app.include_router(product.product_router)
 app.include_router(order.order_router)
+app.include_router(ai.ai_router)
 setup_admin(app)
 
 if __name__ == '__main__':

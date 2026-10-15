@@ -22,6 +22,18 @@ class User(Base):
     registered_date: Mapped[date] = mapped_column(Date, default=date.today)
 
     orders: Mapped[List['Order']] = relationship(back_populates='user', cascade='all, delete-orphan')
+    user_token: Mapped[List['RefreshToken']] = relationship(back_populates='token_user', cascade='all, delete-orphan')
+
+
+class RefreshToken(Base):
+    __tablename__ = 'refresh_token'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+    token: Mapped[str] = mapped_column(String)
+    created_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    token_user: Mapped[User] = relationship(User, back_populates='user_token')
 
 
 class Product(Base):
